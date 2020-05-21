@@ -6,10 +6,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RepoAPIFactory {
+object GitHubServiceFactory {
     private const val API_BASE_URL = "https://api.github.com"
 
-    fun createService(): ReposApi {
+    fun createService(): GitHubService {
         val logging = HttpLoggingInterceptor()
         logging.apply { logging.level = HttpLoggingInterceptor.Level.BODY }
         val httpClient = OkHttpClient.Builder().addInterceptor(logging)
@@ -20,6 +20,6 @@ object RepoAPIFactory {
 
         return builder
             .client(httpClient.build())
-            .build().create(ReposApi::class.java)
+            .build().create(GitHubService::class.java)
     }
 }
