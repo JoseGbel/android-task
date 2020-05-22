@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Degree53AndroidTest</string>
+    <string name="fork">Fork</string>
+    <string name="star">Star</string>
+    <string name="watch">Watch</string>
+    <string name="used_by">Used by</string>
+    <string name="commits">Commits</string>
+    <string name="open_issues">Open Issues</string>
+    <string name="readme_md">README.md</string>
 </resources>

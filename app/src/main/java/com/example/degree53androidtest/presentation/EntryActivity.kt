@@ -12,27 +12,32 @@ import com.example.degree53androidtest.repository.MainRepository
 
 class EntryActivity : AppCompatActivity(), IEntryActivity {
 
-    private val FRAGMENTDATA: String = "KeyForFragmentBundle"
+    val FRAGMENTDATA: String = "KeyForFragmentBundle"
     private lateinit var presenter: MainPresenter
+    private lateinit var button: Button
+    private lateinit var editText: EditText
+    private lateinit var layout: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button : Button = findViewById(R.id.search_btn_main_act)
-        val editText : EditText = findViewById(R.id.introduce_name_et)
-        val layout : ConstraintLayout = findViewById(R.id.entry_activity_layout)
-
+        button = findViewById(R.id.search_btn_main_act)
+        editText = findViewById(R.id.introduce_name_et)
+        layout = findViewById(R.id.entry_activity_layout)
         presenter = MainPresenter(this, MainRepository())
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         button.setOnClickListener {
             layout.visibility = View.GONE
-            val searchResponseObject = presenter.searchByName(editText.text.toString())
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             val fragment = SearchFragment()
             val bundle = Bundle()
-            bundle.putParcelable(FRAGMENTDATA, searchResponseObject)
+            bundle.putString(FRAGMENTDATA, editText.text.toString())
             fragment.arguments = bundle
             fragmentTransaction.add(R.id.fragment_container, fragment)
             fragmentTransaction.commit()
