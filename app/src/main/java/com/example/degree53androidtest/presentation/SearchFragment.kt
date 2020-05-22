@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.viewmodels.SearchViewModel
+import com.example.degree53androidtest.model.GitHubRepoData
 import com.example.degree53androidtest.model.SearchResponseObject
 import com.example.degree53androidtest.presentation.adapters.ReposRecyclerViewAdapter
 
@@ -54,12 +55,6 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-
-
-    }
-
     private fun setUpRecyclerView(){
         if (reposAdapter == null){
             reposAdapter = ReposRecyclerViewAdapter(reposLiveData.value!!, context, this)
@@ -70,8 +65,17 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         }
     }
 
-    override fun onRepoClick(position: Int) {
-        Toast.makeText(context, "Clicked position: $position", Toast.LENGTH_SHORT)
-            .show()
+    override fun onRepoClick(position: Int, repoData: GitHubRepoData) {
+        val fragmentManager = activity!!.supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.entry_top_to_bottom, R.anim.exit_top_to_bottom,
+                R.anim.entry_bottom_to_top, R.anim.exit_bottom_to_top)
+        val fragment = DetailsFragment()
+        val bundle = Bundle()
+        bundle.putParcelable("RepositoryData", repoData)
+        fragment.arguments = bundle
+        fragmentTransaction.addToBackStack("DetailsFragment")
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
     }
 }

@@ -10,6 +10,7 @@ import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.presenters.MainPresenter
 import com.example.degree53androidtest.repository.MainRepository
 
+
 class EntryActivity : AppCompatActivity(), IEntryActivity {
 
     val FRAGMENTDATA: String = "KeyForFragmentBundle"
@@ -17,6 +18,7 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
     private lateinit var button: Button
     private lateinit var editText: EditText
     private lateinit var layout: ConstraintLayout
+    private val fragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +35,22 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
 
         button.setOnClickListener {
             layout.visibility = View.GONE
-            val fragmentManager = supportFragmentManager
+
             val fragmentTransaction = fragmentManager.beginTransaction()
             val fragment = SearchFragment()
             val bundle = Bundle()
             bundle.putString(FRAGMENTDATA, editText.text.toString())
             fragment.arguments = bundle
             fragmentTransaction.add(R.id.fragment_container, fragment)
+            fragmentTransaction.addToBackStack("SearchFragment")
             fragmentTransaction.commit()
         }
+    }
+
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount > 0){
+            fragmentManager.popBackStackImmediate()
+        }
+        else super.onBackPressed()
     }
 }

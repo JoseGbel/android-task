@@ -12,4 +12,5 @@ class GitHubRepo (val id: Long,
                   val watchers: Int,
                   val language: String,
                   val description: String,
-                  val updated_at: String) : Parcelable
+                  val updated_at: String,
+                  val stargazers_count: Int) : Parcelable
