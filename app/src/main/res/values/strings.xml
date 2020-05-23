@@ -4,7 +4,17 @@
     <string name="star">Star</string>
     <string name="watch">Watch</string>
     <string name="used_by">Used by</string>
+    <string name="last_updated">Last updated on %1$s</string>
     <string name="commits">Commits</string>
     <string name="open_issues">Open Issues</string>
     <string name="readme_md">README.md</string>
+    <string name="readme_doesnt_exist">This repository does not contain a README file</string>
+    <string name="possible_causes">
+        Possible causes:
+        \n\t - You are not connected to the Internet.
+        \n\t - The server is not responding.
+    </string>
+    <string name="ok">OK</string>
+    <string name="unable_to_connect">Unable to connect</string>
+    <string name="introduce_something_error">You should introduce something here</string>
 </resources>

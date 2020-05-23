@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 class GitHubRepoData (val owner: Owner,
                       val name: String,
                       val forks: Int,
-                      val starts: Int,
+                      val stars: Int,
                       val watchers: Int,
                       val open_issues: Int) : Parcelable

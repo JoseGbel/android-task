@@ -1,14 +1,20 @@
 package com.example.degree53androidtest.presentation
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.presenters.MainPresenter
 import com.example.degree53androidtest.repository.MainRepository
+import com.example.degree53androidtest.utils.NetworkStatus
+import com.example.degree53androidtest.utils.NetworkStatusLiveData
 
 
 class EntryActivity : AppCompatActivity(), IEntryActivity {
@@ -19,6 +25,7 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
     private lateinit var editText: EditText
     private lateinit var layout: ConstraintLayout
     private val fragmentManager = supportFragmentManager
+    private var connected : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,18 +40,41 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
     override fun onStart() {
         super.onStart()
 
-        button.setOnClickListener {
-            layout.visibility = View.GONE
+        // initialise the Network Status detector
+        NetworkStatusLiveData.init(application)
 
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            val fragment = SearchFragment()
-            val bundle = Bundle()
-            bundle.putString(FRAGMENTDATA, editText.text.toString())
-            fragment.arguments = bundle
-            fragmentTransaction.add(R.id.fragment_container, fragment)
-            fragmentTransaction.addToBackStack("SearchFragment")
-            fragmentTransaction.commit()
+        observeConnectivity()
+
+        button.setOnClickListener {
+            if (connected) {
+
+                if (editText.text.toString() == ""){
+                    editText.error = getString(R.string.introduce_something_error)
+                } else{
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    val fragment = SearchFragment()
+                    val bundle = Bundle()
+                    bundle.putString(FRAGMENTDATA, editText.text.toString())
+                    fragment.arguments = bundle
+                    fragmentTransaction.add(R.id.fragment_container, fragment)
+                    fragmentTransaction.addToBackStack("SearchFragment")
+                    fragmentTransaction.commit()
+
+                    // restart the field to empty string
+                    editText.text = SpannableStringBuilder("")
+                }
+            }else {
+                displayUnableToConnectDialog()
+            }
         }
+    }
+
+    private fun observeConnectivity() {
+        NetworkStatusLiveData.observe(this, Observer {
+            if (it == NetworkStatus.AVAILABLE) connected = true
+            if (it == NetworkStatus.UNAVAILABLE) connected = false
+            if (it == NetworkStatus.LOST) connected = false
+        })
     }
 
     override fun onBackPressed() {
@@ -52,5 +82,9 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
             fragmentManager.popBackStackImmediate()
         }
         else super.onBackPressed()
+    }
+
+    private fun displayUnableToConnectDialog() {
+        FailedConnectionFragment().show(supportFragmentManager, "UnableToConnect")
     }
 }

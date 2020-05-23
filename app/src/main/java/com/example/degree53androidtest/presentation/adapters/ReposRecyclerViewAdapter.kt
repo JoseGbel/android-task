@@ -9,6 +9,7 @@ import com.example.degree53androidtest.R
 import com.example.degree53androidtest.model.GitHubRepo
 import com.example.degree53androidtest.model.GitHubRepoData
 import com.example.degree53androidtest.model.SearchResponseObject
+import com.example.degree53androidtest.utils.convertDate
 import kotlinx.android.synthetic.main.repos_card_layout.view.*
 
 class ReposRecyclerViewAdapter(val searchResponse: SearchResponseObject,
@@ -16,7 +17,8 @@ class ReposRecyclerViewAdapter(val searchResponse: SearchResponseObject,
                                val onRepoListener: OnRepoListener)
     : RecyclerView.Adapter<ReposRecyclerViewAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View, val onRepoListener: OnRepoListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
+    class ViewHolder(itemView: View, val onRepoListener: OnRepoListener, val context: Context?)
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
         lateinit var repoData : GitHubRepoData
         init{
@@ -24,14 +26,15 @@ class ReposRecyclerViewAdapter(val searchResponse: SearchResponseObject,
         }
 
         fun bindItem(gitHubRepo : GitHubRepo) {
-            itemView.repo_name_hyperlink_tv.text = gitHubRepo.name
+            itemView.repo_name_hyperlink_tv.text = gitHubRepo.full_name
             if (gitHubRepo.description == null){
                 itemView.repo_description_tv.visibility = View.GONE
             } else {
                 itemView.repo_description_tv.text = gitHubRepo.description
             }
             itemView.repo_language_tv.text = gitHubRepo.language
-            itemView.repo_updated_at_tv.text = "Last updated Test"
+            itemView.repo_updated_at_tv.text = context!!
+                .getString(R.string.last_updated, gitHubRepo.updated_at.convertDate())
 
             repoData = GitHubRepoData(gitHubRepo.owner, gitHubRepo.name, gitHubRepo.forks,
                gitHubRepo.stargazers_count, gitHubRepo.watchers, gitHubRepo.open_issues)
@@ -50,7 +53,7 @@ class ReposRecyclerViewAdapter(val searchResponse: SearchResponseObject,
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.repos_card_layout, parent, false)
 
-        return ViewHolder(view, onRepoListener)
+        return ViewHolder(view, onRepoListener, context)
     }
 
     override fun getItemCount(): Int {

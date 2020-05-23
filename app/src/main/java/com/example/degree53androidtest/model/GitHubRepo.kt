@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class GitHubRepo (val id: Long,
                   val name: String,
+                  val full_name: String,
                   val owner: Owner,
                   val forks: Int,
                   val open_issues: Int,

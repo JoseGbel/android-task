@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GitHubRoundifierTest {
+class ExtensionsTest {
 
     @Test
     fun should_round_three_digits_number() {
@@ -64,6 +64,26 @@ class GitHubRoundifierTest {
         val expected = "123.4k"
 
         val actual = int.kRoundify()
+
+        assertEquals(expected,actual)
+    }
+
+    @Test
+    fun should_convert_date_current_year (){
+        val dateToConvert = "2020-05-23T02:30:23Z"
+        val expected = "23 May"
+
+        val actual = dateToConvert.convertDate()
+
+        assertEquals(expected,actual)
+    }
+
+    @Test
+    fun should_convert_date_past_year (){
+        val dateToConvert = "2019-02-14T02:30:23Z"
+        val expected = "14 Feb 2019"
+
+        val actual = dateToConvert.convertDate()
 
         assertEquals(expected,actual)
     }
