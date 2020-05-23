@@ -1,4 +1,4 @@
-package com.example.degree53androidtest.network
+package com.example.degree53androidtest.model.network
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

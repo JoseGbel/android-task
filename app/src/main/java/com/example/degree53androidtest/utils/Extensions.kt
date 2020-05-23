@@ -1,18 +1,18 @@
 package com.example.degree53androidtest.utils
 
-import android.util.TimeUtils
-import java.sql.Time
-import java.time.LocalDate
+import android.app.Activity
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.round
-import kotlin.collections.get as get1
 
 /**
- * This method converts an integer such as "12345" to the string "1.2k"
+ * Converts an integer such as "12345" to the string "1.2k"
  */
 fun Int.kRoundify() : String{
-    var multiplier = 10
+    val multiplier = 10
 
     return if (this/1000 >= 1) {
         val roundedNumber = round((this * multiplier / 1000).toDouble())
@@ -22,7 +22,11 @@ fun Int.kRoundify() : String{
     }
 }
 
-fun String.convertDate() : String {
+
+/**
+ * Converts the string date from github format '10-10-2010T11:05:22' to '10 Oct 2010'
+ */
+fun String.dateConvert() : String {
     lateinit var day : String
     lateinit var month : String
     lateinit var year : String
@@ -50,4 +54,13 @@ fun String.convertDate() : String {
         return "$day $month $year"
 
     return "$day $month"
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
 }

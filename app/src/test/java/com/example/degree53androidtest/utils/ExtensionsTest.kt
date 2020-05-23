@@ -73,7 +73,7 @@ class ExtensionsTest {
         val dateToConvert = "2020-05-23T02:30:23Z"
         val expected = "23 May"
 
-        val actual = dateToConvert.convertDate()
+        val actual = dateToConvert.dateConvert()
 
         assertEquals(expected,actual)
     }
@@ -83,7 +83,7 @@ class ExtensionsTest {
         val dateToConvert = "2019-02-14T02:30:23Z"
         val expected = "14 Feb 2019"
 
-        val actual = dateToConvert.convertDate()
+        val actual = dateToConvert.dateConvert()
 
         assertEquals(expected,actual)
     }

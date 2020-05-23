@@ -17,4 +17,18 @@
     <string name="ok">OK</string>
     <string name="unable_to_connect">Unable to connect</string>
     <string name="introduce_something_error">You should introduce something here</string>
+    <string name="introduce_a_repository_name">Introduce a repository name:</string>
+    <string name="name">Name</string>
+    <string name="search">Search</string>
+    <string name="no_results">This search found no results</string>
+    <string name="repository_icon">Repository Icon</string>
+    <string name="last_update_test_string">Last update</string>
+    <string name="language_test_string">Language</string>
+    <string name="description_test_string">Description</string>
+    <string name="repository_name_test_string">Repository Name</string>
+    <string name="watchers_icon">Watchers icon</string>
+    <string name="_0">0</string>
+    <string name="open_issues_icon">Open issues icon</string>
+    <string name="forks_icon">Forks icon</string>
+    <string name="stars_icon">Stars icon</string>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_elevation">0dp</dimen>
+    <dimen name="relative_layout_padding_card_view">16dp</dimen>
+    <dimen name="read_me_text_view_margin">6dp</dimen>
+</resources>

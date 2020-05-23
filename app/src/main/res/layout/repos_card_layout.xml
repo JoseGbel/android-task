@@ -3,32 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="0dp"
+    app:cardElevation="@dimen/card_elevation"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/relative_layout_padding_card_view">
+
         <ImageView
             android:id="@+id/icon_repo"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_repo"
-            android:layout_marginTop="@dimen/icon_margin"/>
+            android:layout_marginTop="@dimen/icon_margin"
+            android:contentDescription="@string/repository_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/icon_repo"
             android:layout_toEndOf="@+id/icon_repo"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/repo_name_hyperlink_tv"
+                android:id="@+id/repo_full_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Testing"
+                android:text="@string/repository_name_test_string"
                 android:textSize="@dimen/list_item_large_text_size"
                 android:padding="@dimen/small_padding"/>
 
@@ -36,7 +37,7 @@
                 android:id="@+id/repo_description_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Testing"
+                android:text="@string/description_test_string"
                 android:textSize="@dimen/list_item_large_text_size"
                 android:padding="@dimen/small_padding"/>
 
@@ -49,7 +50,7 @@
                     android:id="@+id/repo_language_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Language Test"
+                    android:text="@string/language_test_string"
                     android:textSize="@dimen/list_item_small_text_size"
                     android:padding="@dimen/small_padding"/>
 
@@ -57,7 +58,7 @@
                     android:id="@+id/repo_updated_at_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Updated at"
+                    android:text="@string/last_update_test_string"
                     android:textSize="@dimen/list_item_small_text_size"
                     android:padding="@dimen/small_padding"/>
             </LinearLayout>

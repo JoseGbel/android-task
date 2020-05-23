@@ -3,11 +3,10 @@ package com.example.degree53androidtest.utils
 import android.app.Application
 import android.content.Context
 import android.net.*
-import android.os.Build
 import androidx.lifecycle.LiveData
 
 /**
- * This object is used to handled network connectivity issues.
+ * This object is used to handle network connectivity issues.
  * It implements LiveData to get the current status of a network
  */
 object NetworkStatusLiveData : LiveData<NetworkStatus>() {
@@ -31,43 +30,26 @@ object NetworkStatusLiveData : LiveData<NetworkStatus>() {
     private fun getStatus() {
         val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val callback = object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network?) {
+        cm.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network?) {
+                if (network != null) {
                     super.onAvailable(network)
                     postValue(NetworkStatus.AVAILABLE)
-                }
+                } // else log something
+            }
 
-                override fun onUnavailable() {
-                    super.onUnavailable()
-                    postValue(NetworkStatus.UNAVAILABLE)
-                }
+            override fun onUnavailable() {
+                super.onUnavailable()
+                postValue(NetworkStatus.UNAVAILABLE)
+            }
 
-                override fun onLost(network: Network?) {
+            override fun onLost(network: Network?) {
+                if(network != null) {
                     super.onLost(network)
                     postValue(NetworkStatus.LOST)
                 }
             }
-
-            cm.requestNetwork(networkRequest, callback, 3000)
-        } else {
-            cm.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network?) {
-                    super.onAvailable(network)
-                    postValue(NetworkStatus.AVAILABLE)
-                }
-
-                override fun onUnavailable() {
-                    super.onUnavailable()
-                    postValue(NetworkStatus.UNAVAILABLE)
-                }
-
-                override fun onLost(network: Network?) {
-                    super.onLost(network)
-                    postValue(NetworkStatus.LOST)
-                }
-            })
-        }
+        })
     }
 }
 

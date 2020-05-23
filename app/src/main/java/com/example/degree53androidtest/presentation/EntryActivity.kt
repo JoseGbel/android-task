@@ -1,26 +1,21 @@
 package com.example.degree53androidtest.presentation
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.example.degree53androidtest.R
-import com.example.degree53androidtest.business.presenters.MainPresenter
-import com.example.degree53androidtest.repository.MainRepository
 import com.example.degree53androidtest.utils.NetworkStatus
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
+import com.example.degree53androidtest.utils.hideKeyboard
 
 
-class EntryActivity : AppCompatActivity(), IEntryActivity {
+class EntryActivity : AppCompatActivity() {
 
     val FRAGMENTDATA: String = "KeyForFragmentBundle"
-    private lateinit var presenter: MainPresenter
     private lateinit var button: Button
     private lateinit var editText: EditText
     private lateinit var layout: ConstraintLayout
@@ -34,7 +29,6 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
         button = findViewById(R.id.search_btn_main_act)
         editText = findViewById(R.id.introduce_name_et)
         layout = findViewById(R.id.entry_activity_layout)
-        presenter = MainPresenter(this, MainRepository())
     }
 
     override fun onStart() {
@@ -47,26 +41,31 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
 
         button.setOnClickListener {
             if (connected) {
-
                 if (editText.text.toString() == ""){
                     editText.error = getString(R.string.introduce_something_error)
                 } else{
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    val fragment = SearchFragment()
-                    val bundle = Bundle()
-                    bundle.putString(FRAGMENTDATA, editText.text.toString())
-                    fragment.arguments = bundle
-                    fragmentTransaction.add(R.id.fragment_container, fragment)
-                    fragmentTransaction.addToBackStack("SearchFragment")
-                    fragmentTransaction.commit()
+                    startSearchFragment()
 
-                    // restart the field to empty string
+                    // restart the EditText field to empty string
                     editText.text = SpannableStringBuilder("")
+
+                    hideKeyboard()
                 }
             }else {
                 displayUnableToConnectDialog()
             }
         }
+    }
+
+    private fun startSearchFragment() {
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = SearchFragment()
+        val bundle = Bundle()
+        bundle.putString(FRAGMENTDATA, editText.text.toString())
+        fragment.arguments = bundle
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack("SearchFragment")
+        fragmentTransaction.commit()
     }
 
     private fun observeConnectivity() {
@@ -85,6 +84,6 @@ class EntryActivity : AppCompatActivity(), IEntryActivity {
     }
 
     private fun displayUnableToConnectDialog() {
-        FailedConnectionFragment().show(supportFragmentManager, "UnableToConnect")
+        FailedConnectionDialogFragment().show(supportFragmentManager, "UnableToConnect")
     }
 }

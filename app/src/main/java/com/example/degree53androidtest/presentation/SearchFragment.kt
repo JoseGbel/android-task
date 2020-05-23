@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -12,18 +13,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.viewmodels.SearchViewModel
-import com.example.degree53androidtest.model.GitHubRepoData
-import com.example.degree53androidtest.model.SearchResponseObject
+import com.example.degree53androidtest.model.RepoDetails
+import com.example.degree53androidtest.model.SearchResponse
 import com.example.degree53androidtest.presentation.adapters.ReposRecyclerViewAdapter
 import com.example.degree53androidtest.utils.NetworkStatus
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
 
-
 class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
 
     private var connected: Boolean = false
-    private lateinit var reposLiveData : LiveData<SearchResponseObject>
     private var reposAdapter: ReposRecyclerViewAdapter? = null
+    private lateinit var reposLiveData : LiveData<SearchResponse>
     private lateinit var recyclerView : RecyclerView
     private lateinit var viewModel: SearchViewModel
     private lateinit var searchWord : String
@@ -38,7 +38,6 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         return inflater.inflate(R.layout.search_fragment, container, false)
     }
 
@@ -56,13 +55,18 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         viewModel.searchGitHubRepos(searchWord)
         reposLiveData = viewModel.gitHubRepos
         reposLiveData.observe(viewLifecycleOwner, Observer { data ->
-            setUpRecyclerView()
+            if(data.total_count == 0){
+                Toast.makeText(context, getString(R.string.no_results), Toast.LENGTH_LONG)
+                    .show()
+            } else {
+                setUpRecyclerView()
+            }
         })
     }
 
     private fun setUpRecyclerView(){
         if (reposAdapter == null){
-            reposAdapter = ReposRecyclerViewAdapter(reposLiveData.value!!, context, this)
+            reposAdapter = ReposRecyclerViewAdapter(reposLiveData.value!!, context,this)
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = reposAdapter
         } else {
@@ -70,8 +74,7 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         }
     }
 
-    override fun onRepoClick(position: Int, repoData: GitHubRepoData) {
-
+    override fun onRepoClick(position: Int, repoData: RepoDetails) {
         if (connected) { // open the search fragment
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
@@ -92,7 +95,7 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
     }
 
     private fun displayUnableToConnectDialog() {
-        FailedConnectionFragment().show(activity!!.supportFragmentManager, "UnableToConnect")
+        FailedConnectionDialogFragment().show(activity!!.supportFragmentManager, "UnableToConnect")
     }
 
     private fun observeNetworkConnectivity() {

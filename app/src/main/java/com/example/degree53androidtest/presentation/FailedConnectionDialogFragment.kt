@@ -6,7 +6,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.degree53androidtest.R
 
-class FailedConnectionFragment : DialogFragment() {
+/**
+ * DialogFragment to inform the user of connectivity issues
+ */
+class FailedConnectionDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)

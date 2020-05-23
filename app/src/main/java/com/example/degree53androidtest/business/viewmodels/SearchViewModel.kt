@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.degree53androidtest.model.GitHubRepo
-import com.example.degree53androidtest.model.SearchResponseObject
-import com.example.degree53androidtest.repository.MainRepository
+import com.example.degree53androidtest.model.SearchResponse
+import com.example.degree53androidtest.model.repository.MainRepository
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
-    private val _githubRepos = MutableLiveData<SearchResponseObject>()
-    val gitHubRepos: LiveData<SearchResponseObject>
+    private val _githubRepos = MutableLiveData<SearchResponse>()
+    val gitHubRepos: LiveData<SearchResponse>
         get() = _githubRepos
 
     fun searchGitHubRepos(name: String) {

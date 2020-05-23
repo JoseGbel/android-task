@@ -1,14 +1,11 @@
 package com.example.degree53androidtest.business.viewmodels
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.degree53androidtest.R
-import com.example.degree53androidtest.network.ReadmeResponse
-import com.example.degree53androidtest.repository.MainRepository
-import kotlinx.android.synthetic.main.details_fragment.view.*
+import com.example.degree53androidtest.model.ReadmeResponse
+import com.example.degree53androidtest.model.repository.MainRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.lang.Exception
