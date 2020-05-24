@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.viewmodels.DetailsViewModel
-import com.example.degree53androidtest.model.RepoDetails
-import com.example.degree53androidtest.model.Owner
+import com.example.degree53androidtest.data.models.RepoDetails
+import com.example.degree53androidtest.data.models.Owner
 import com.example.degree53androidtest.utils.kRoundify
 import kotlinx.android.synthetic.main.details_fragment.view.*
 
@@ -38,7 +38,13 @@ class DetailsFragment : Fragment() {
 
         // get data from bundle
         repoData = arguments?.getParcelable("RepositoryData")
-            ?: RepoDetails(Owner("", 0, ""),"", 0,0,0,0)
+            ?: RepoDetails(
+                Owner(
+                    "",
+                    0,
+                    ""
+                ), "", 0, 0, 0, 0
+            )
 
         // bind data to views
         view.fork_value_tv.text = repoData.forks.kRoundify()
@@ -73,6 +79,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun displayUnableToConnectDialog() {
-        FailedConnectionDialogFragment().show(activity!!.supportFragmentManager, "UnableToConnect")
+        FailedConnectionDialogFragment()
+            .show(requireActivity().supportFragmentManager, "UnableToConnect")
     }
 }

@@ -1,38 +1,28 @@
 package com.example.degree53androidtest.presentation
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.degree53androidtest.R
-import com.example.degree53androidtest.business.viewmodels.SearchViewModel
-import com.example.degree53androidtest.model.RepoDetails
-import com.example.degree53androidtest.model.SearchResponse
-import com.example.degree53androidtest.presentation.adapters.ReposRecyclerViewAdapter
 import com.example.degree53androidtest.utils.NetworkStatus
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
+import com.example.degree53androidtest.utils.hideKeyboard
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.search_fragment.*
 
-class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
+/**
+ * @author Jose Garcia
+ */
+class SearchFragment : Fragment() {
 
-    private var connected: Boolean = false
-    private var reposAdapter: ReposRecyclerViewAdapter? = null
-    private lateinit var reposLiveData : LiveData<SearchResponse>
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var viewModel: SearchViewModel
-    private lateinit var searchWord : String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-    }
+    private lateinit var editText: EditText
+    private var connected : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,66 +33,53 @@ class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.search_recycler_view)
+        editText = view.findViewById(R.id.introduce_name_et)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        searchWord = arguments?.getString("KeyForFragmentBundle") ?: ""
+    override fun onStart() {
+        super.onStart()
 
-        observeNetworkConnectivity()
+        observeConnectivity()
 
-        viewModel.searchGitHubRepos(searchWord)
-        reposLiveData = viewModel.gitHubRepos
-        reposLiveData.observe(viewLifecycleOwner, Observer { data ->
-            if(data.total_count == 0){
-                Toast.makeText(context, getString(R.string.no_results), Toast.LENGTH_LONG)
-                    .show()
-            } else {
-                setUpRecyclerView()
+        search_btn.setOnClickListener {
+            if (connected) {
+                if (editText.text.toString() == ""){
+                    editText.error = getString(R.string.introduce_something_error)
+                } else{
+                    startSearchFragment()
+
+                    // restart the EditText field to empty string
+                    editText.text = SpannableStringBuilder("")
+
+                    hideKeyboard()
+                }
+            }else {
+                displayUnableToConnectDialog()
             }
-        })
-    }
-
-    private fun setUpRecyclerView(){
-        if (reposAdapter == null){
-            reposAdapter = ReposRecyclerViewAdapter(reposLiveData.value!!, context,this)
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = reposAdapter
-        } else {
-            reposAdapter!!.notifyDataSetChanged()
         }
     }
 
-    override fun onRepoClick(position: Int, repoData: RepoDetails) {
-        if (connected) { // open the search fragment
-            val fragmentManager = activity!!.supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.entry_top_to_bottom, R.anim.exit_top_to_bottom,
-                    R.anim.entry_bottom_to_top, R.anim.exit_bottom_to_top
-                )
-            val fragment = DetailsFragment()
-            val bundle = Bundle()
-            bundle.putParcelable("RepositoryData", repoData)
-            fragment.arguments = bundle
-            fragmentTransaction.addToBackStack("DetailsFragment")
-            fragmentTransaction.add(R.id.fragment_container, fragment)
-            fragmentTransaction.commit()
-        } else {
-            displayUnableToConnectDialog()
-        }
-    }
-
-    private fun displayUnableToConnectDialog() {
-        FailedConnectionDialogFragment().show(activity!!.supportFragmentManager, "UnableToConnect")
-    }
-
-    private fun observeNetworkConnectivity() {
+    private fun observeConnectivity() {
         NetworkStatusLiveData.observe(this, Observer {
             if (it == NetworkStatus.AVAILABLE) connected = true
             if (it == NetworkStatus.UNAVAILABLE) connected = false
             if (it == NetworkStatus.LOST) connected = false
         })
+    }
+
+    private fun startSearchFragment() {
+        val fragmentTransaction = requireFragmentManager().beginTransaction()
+        val fragment = RepoListFragment()
+        val bundle = Bundle()
+        bundle.putString("Keyword", editText.text.toString())
+        fragment.arguments = bundle
+        fragmentTransaction.add(R.id.fragment_container, fragment, "RepoListFragment")
+        fragmentTransaction.addToBackStack("RepoListFragment")
+        fragmentTransaction.commit()
+    }
+
+    private fun displayUnableToConnectDialog() {
+        FailedConnectionDialogFragment()
+            .show(requireActivity().supportFragmentManager, "UnableToConnect")
     }
 }

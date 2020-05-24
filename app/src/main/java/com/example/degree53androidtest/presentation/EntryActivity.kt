@@ -1,34 +1,29 @@
 package com.example.degree53androidtest.presentation
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.widget.Button
-import android.widget.EditText
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.degree53androidtest.R
-import com.example.degree53androidtest.utils.NetworkStatus
+import com.example.degree53androidtest.business.viewmodels.RepoListViewModel
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
-import com.example.degree53androidtest.utils.hideKeyboard
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.repo_list_fragment.*
 
-
+/**
+ * @author Jose Garcia
+ */
 class EntryActivity : AppCompatActivity() {
 
-    val FRAGMENTDATA: String = "KeyForFragmentBundle"
-    private lateinit var button: Button
-    private lateinit var editText: EditText
-    private lateinit var layout: ConstraintLayout
     private val fragmentManager = supportFragmentManager
-    private var connected : Boolean = false
+    private lateinit var repoListViewModel : RepoListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        button = findViewById(R.id.search_btn_main_act)
-        editText = findViewById(R.id.introduce_name_et)
-        layout = findViewById(R.id.entry_activity_layout)
+        repoListViewModel = ViewModelProvider(this).get(RepoListViewModel::class.java)
     }
 
     override fun onStart() {
@@ -37,53 +32,37 @@ class EntryActivity : AppCompatActivity() {
         // initialise the Network Status detector
         NetworkStatusLiveData.init(application)
 
-        observeConnectivity()
+        repoListViewModel.isLoading.observe(this, Observer { isLoading ->
+            if(isLoading)
+                progress_bar.visibility = View.VISIBLE
+            else
+                progress_bar.visibility = View.INVISIBLE
+        })
 
-        button.setOnClickListener {
-            if (connected) {
-                if (editText.text.toString() == ""){
-                    editText.error = getString(R.string.introduce_something_error)
-                } else{
-                    startSearchFragment()
+        init()
+    }
 
-                    // restart the EditText field to empty string
-                    editText.text = SpannableStringBuilder("")
-
-                    hideKeyboard()
-                }
-            }else {
-                displayUnableToConnectDialog()
-            }
+    private fun init(){
+        if(supportFragmentManager.fragments.size == 0){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SearchFragment(), "SearchFragment")
+                .commit()
         }
     }
 
-    private fun startSearchFragment() {
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = SearchFragment()
-        val bundle = Bundle()
-        bundle.putString(FRAGMENTDATA, editText.text.toString())
-        fragment.arguments = bundle
-        fragmentTransaction.add(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack("SearchFragment")
-        fragmentTransaction.commit()
-    }
-
-    private fun observeConnectivity() {
-        NetworkStatusLiveData.observe(this, Observer {
-            if (it == NetworkStatus.AVAILABLE) connected = true
-            if (it == NetworkStatus.UNAVAILABLE) connected = false
-            if (it == NetworkStatus.LOST) connected = false
-        })
-    }
-
     override fun onBackPressed() {
+        val topFragmentIndex = fragmentManager.backStackEntryCount-1
+        if (topFragmentIndex > 0) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(topFragmentIndex)
+            if (backStackEntry.name == "RepoListFragment") {
+                (fragmentManager.findFragmentByTag("RepoListFragment") as RepoListFragment)
+                    .resetAdapter()
+            }
+        }
+
         if (fragmentManager.backStackEntryCount > 0){
             fragmentManager.popBackStackImmediate()
         }
         else super.onBackPressed()
-    }
-
-    private fun displayUnableToConnectDialog() {
-        FailedConnectionDialogFragment().show(supportFragmentManager, "UnableToConnect")
     }
 }

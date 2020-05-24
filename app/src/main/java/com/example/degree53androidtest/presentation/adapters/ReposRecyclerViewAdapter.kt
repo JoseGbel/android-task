@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.degree53androidtest.R
-import com.example.degree53androidtest.model.GitHubRepo
-import com.example.degree53androidtest.model.RepoDetails
-import com.example.degree53androidtest.model.SearchResponse
+import com.example.degree53androidtest.data.models.GitHubRepo
+import com.example.degree53androidtest.data.models.RepoDetails
+import com.example.degree53androidtest.data.models.SearchResponse
 import com.example.degree53androidtest.utils.dateConvert
 import kotlinx.android.synthetic.main.repos_card_layout.view.*
 
@@ -42,8 +42,11 @@ class ReposRecyclerViewAdapter(private val searchResponse: SearchResponse,
                 .getString(R.string.last_updated, gitHubRepo.updated_at.dateConvert())
 
             // keep a reference of the rest of the details for future processing
-            repoDetails = RepoDetails(gitHubRepo.owner, gitHubRepo.name, gitHubRepo.forks,
-               gitHubRepo.stargazers_count, gitHubRepo.watchers, gitHubRepo.open_issues)
+            repoDetails =
+                RepoDetails(
+                    gitHubRepo.owner, gitHubRepo.name, gitHubRepo.forks,
+                    gitHubRepo.stargazers_count, gitHubRepo.watchers, gitHubRepo.open_issues
+                )
         }
 
         override fun onClick(v: View?) {

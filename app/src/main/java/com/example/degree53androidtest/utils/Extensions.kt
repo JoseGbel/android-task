@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.round
@@ -24,7 +25,8 @@ fun Int.kRoundify() : String{
 
 
 /**
- * Converts the string date from github format '10-10-2010T11:05:22' to '10 Oct 2010'
+ * Converts the string timestamp from github in ISO 8601 format 'YYYY-MM-DDTHH:MM:SSZ'
+ * to 'DD Mth YYYY' (23 May 2020)
  */
 fun String.dateConvert() : String {
     lateinit var day : String
@@ -61,6 +63,6 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Activity.hideKeyboard() {
-    hideKeyboard(currentFocus ?: View(this))
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
 }
