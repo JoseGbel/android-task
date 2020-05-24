@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.viewmodels.DetailsViewModel
-import com.example.degree53androidtest.data.models.RepoDetails
 import com.example.degree53androidtest.data.models.Owner
+import com.example.degree53androidtest.data.models.RepoDetails
 import com.example.degree53androidtest.utils.kRoundify
 import kotlinx.android.synthetic.main.details_fragment.view.*
 

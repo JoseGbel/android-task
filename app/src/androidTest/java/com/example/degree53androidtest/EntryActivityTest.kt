@@ -1,12 +1,15 @@
 package com.example.degree53androidtest
 
+import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -14,6 +17,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.example.degree53androidtest.presentation.EntryActivity
 import com.example.degree53androidtest.utils.EspressoIdlingResource
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -38,68 +43,49 @@ class EntryActivityTest {
     }
 
     @Test
-    fun whenTypeAStringAndHitSearchBtn_NavigatesToSearchFragment() {
-        onView(withId(R.id.introduce_name_et))
-            .perform(typeText("Hello world"))
+    fun whenTypeAStringAndSubmitSearchBtn_DisplayItems() {
+        onView(withId(R.id.repo_search_view)).perform(SearchViewActionExtension.submitText("retrofit"))
 
-        onView(withId(R.id.search_btn))
-            .perform(click())
-
-        onView(withId(R.id.search_recycler_view))
-            .check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun whenTypeNothingAndHitSearchBtn_NavigatesToSearchFragment() {
-        onView(withId(R.id.introduce_name_et))
-            .perform(typeText(""))
-
-        onView(withId(R.id.search_btn))
-            .perform(click())
-
-        onView(withId(R.id.introduce_name_et))
-            .check(matches(hasErrorText("You should introduce something here")))
-
-
-    }
-
-    @Test
-    fun navigatesToSearchFagment_NavigatesToDetailsFragment_Check_Readme_isDisplayed() {
-        onView(withId(R.id.introduce_name_et))
-            .perform(typeText("retrofit"))
-
-        onView(withId(R.id.search_btn))
-            .perform(click())
-
-        onView(withId(R.id.search_recycler_view))
-            .perform(
-                RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(withText("square/retrofit")), click()))
-
-        onView(withId(R.id.readme_layout)).check(matches(isDisplayed()))
-
-    }
-
-    @Test
-    fun fromDetailsView_clickBackButtonTwoTimes_navigatesBackToFirstFragment() {
-        onView(withId(R.id.introduce_name_et))
-            .perform(typeText("retrofit"))
-
-        onView(withId(R.id.search_btn))
-            .perform(click())
 
         onView(withId(R.id.search_recycler_view))
             .perform(
                 RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
                     hasDescendant(withText("square/retrofit")), click()))
+    }
+}
 
-        Espresso.pressBack()
+class SearchViewActionExtension {
 
-        onView(withId(R.id.search_recycler_view))
-            .check(matches(isDisplayed()))
+    companion object {
+        fun submitText(text: String): ViewAction {
+            return object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
+                }
 
-        Espresso.pressBack()
+                override fun getDescription(): String {
+                    return "Set text and submit"
+                }
 
-        onView(withId(R.id.search_btn)).check(matches(isDisplayed()))
+                override fun perform(uiController: UiController, view: View) {
+                    (view as SearchView).setQuery(text, true) //submit=true will fire search
+                }
+            }
+        }
+        fun typeText(text: String): ViewAction {
+            return object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
+                }
+
+                override fun getDescription(): String {
+                    return "Set text"
+                }
+
+                override fun perform(uiController: UiController, view: View) {
+                    (view as SearchView).setQuery(text, false)
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -19,6 +20,7 @@ import com.example.degree53androidtest.data.models.SearchResponse
 import com.example.degree53androidtest.presentation.adapters.ReposRecyclerViewAdapter
 import com.example.degree53androidtest.utils.NetworkStatus
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
+import kotlinx.android.synthetic.main.repo_list_fragment.*
 
 
 class RepoListFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
@@ -57,8 +59,34 @@ class RepoListFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
 
         observeNetworkConnectivity()
 
+        repo_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                recyclerView.adapter = null
+                if (query != null) {
+                    if (connected) {
+                        viewModel.searchGitHubRepos(query)
+                    } else {
+                        displayUnableToConnectDialog()
+                    }
+                }
+                return false
+            }
 
-        viewModel.searchGitHubRepos(searchWord)
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // TODO due to github's Api rate limit, this feature has been disabled.
+//                if (newText != null) {
+//                    if (connected) {
+//                        viewModel.searchGitHubRepos(newText)
+//                    } else {
+//                        displayUnableToConnectDialog()
+//                    }
+//                }
+                return false
+            }
+        })
+
+        repo_search_view.setOnClickListener { repo_search_view.isIconified = false }
+
         reposLiveData = viewModel.gitHubRepos
         Log.d (TAG , "Has observers ${reposLiveData.hasObservers()}")
         reposLiveData.observe(viewLifecycleOwner, Observer { data ->

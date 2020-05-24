@@ -31,4 +31,5 @@
     <string name="open_issues_icon">Open issues icon</string>
     <string name="forks_icon">Forks icon</string>
     <string name="stars_icon">Stars icon</string>
+    <string name="search_title">SearchTitle</string>
 </resources>

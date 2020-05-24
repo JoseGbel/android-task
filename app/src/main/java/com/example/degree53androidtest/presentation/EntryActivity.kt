@@ -1,24 +1,25 @@
 package com.example.degree53androidtest.presentation
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.degree53androidtest.R
 import com.example.degree53androidtest.business.viewmodels.RepoListViewModel
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.repo_list_fragment.*
 
 /**
  * @author Jose Garcia
  */
 class EntryActivity : AppCompatActivity() {
-
     private val fragmentManager = supportFragmentManager
     private lateinit var repoListViewModel : RepoListViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,7 +46,7 @@ class EntryActivity : AppCompatActivity() {
     private fun init(){
         if(supportFragmentManager.fragments.size == 0){
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SearchFragment(), "SearchFragment")
+                .replace(R.id.fragment_container, RepoListFragment(), "RepoListFragment")
                 .commit()
         }
     }
