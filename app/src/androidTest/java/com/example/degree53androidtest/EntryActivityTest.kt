@@ -7,11 +7,8 @@ import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
@@ -69,21 +66,6 @@ class SearchViewActionExtension {
 
                 override fun perform(uiController: UiController, view: View) {
                     (view as SearchView).setQuery(text, true) //submit=true will fire search
-                }
-            }
-        }
-        fun typeText(text: String): ViewAction {
-            return object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
-                }
-
-                override fun getDescription(): String {
-                    return "Set text"
-                }
-
-                override fun perform(uiController: UiController, view: View) {
-                    (view as SearchView).setQuery(text, false)
                 }
             }
         }

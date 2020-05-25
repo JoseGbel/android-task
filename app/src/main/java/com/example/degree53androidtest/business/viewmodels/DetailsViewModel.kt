@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.degree53androidtest.data.models.ReadmeResponse
-import com.example.degree53androidtest.data.repository.MainRepository
+import com.example.degree53androidtest.data.repository.MainRepositoryImpl
 import com.example.degree53androidtest.utils.EspressoIdlingResource
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -30,7 +30,7 @@ class DetailsViewModel : ViewModel() {
 
         val job = viewModelScope.launch {
             try {
-                _readme.postValue(MainRepository().getReadmeFile(owner, repo))
+                _readme.postValue(MainRepositoryImpl().getReadmeFile(owner, repo))
 
             } catch (e: HttpException) {
                 _readMeNotFound.postValue(true)

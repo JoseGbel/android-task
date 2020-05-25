@@ -14,30 +14,30 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.degree53androidtest.R
-import com.example.degree53androidtest.business.viewmodels.RepoListViewModel
+import com.example.degree53androidtest.business.viewmodels.SearchViewModel
 import com.example.degree53androidtest.data.models.RepoDetails
 import com.example.degree53androidtest.data.models.SearchResponse
 import com.example.degree53androidtest.presentation.adapters.ReposRecyclerViewAdapter
 import com.example.degree53androidtest.utils.NetworkStatus
 import com.example.degree53androidtest.utils.NetworkStatusLiveData
-import kotlinx.android.synthetic.main.repo_list_fragment.*
+import kotlinx.android.synthetic.main.search_fragment.*
 
 
-class RepoListFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
+class SearchFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
 
     private val TAG: String? = "AppDebug"
     private var connected: Boolean = false
     private var reposAdapter: ReposRecyclerViewAdapter? = null
     private lateinit var reposLiveData : LiveData<SearchResponse>
     private lateinit var recyclerView : RecyclerView
-    private lateinit var viewModel: RepoListViewModel
+    private lateinit var viewModel: SearchViewModel
     private lateinit var searchWord : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            viewModel = ViewModelProvider(it).get(RepoListViewModel::class.java)
+            viewModel = ViewModelProvider(it).get(SearchViewModel::class.java)
         }
     }
 
@@ -45,7 +45,7 @@ class RepoListFragment : Fragment(), ReposRecyclerViewAdapter.OnRepoListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.repo_list_fragment, container, false)
+        return inflater.inflate(R.layout.search_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

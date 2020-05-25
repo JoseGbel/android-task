@@ -41,8 +41,7 @@ class DetailsFragment : Fragment() {
             ?: RepoDetails(
                 Owner(
                     "",
-                    0,
-                    ""
+                    0
                 ), "", 0, 0, 0, 0
             )
 

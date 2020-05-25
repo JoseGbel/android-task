@@ -2,17 +2,17 @@ package com.example.degree53androidtest.data.network
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Factory that creates instances of the GitHubService
+ */
 object GitHubServiceFactory {
     private const val API_BASE_URL = "https://api.github.com"
 
     fun createService(): GitHubService {
-        val logging = HttpLoggingInterceptor()
-        logging.apply { logging.level = HttpLoggingInterceptor.Level.BODY }
-        val httpClient = OkHttpClient.Builder().addInterceptor(logging)
+        val httpClient = OkHttpClient.Builder()
 
         val builder = Retrofit.Builder()
             .baseUrl(API_BASE_URL)

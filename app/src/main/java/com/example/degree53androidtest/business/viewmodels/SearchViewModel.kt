@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.degree53androidtest.data.models.SearchResponse
-import com.example.degree53androidtest.data.repository.MainRepository
+import com.example.degree53androidtest.data.repository.MainRepositoryImpl
 import com.example.degree53androidtest.utils.EspressoIdlingResource
 import kotlinx.coroutines.launch
 
-class RepoListViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
     private val _githubRepos = MutableLiveData<SearchResponse>()
     val gitHubRepos: LiveData<SearchResponse>
         get() = _githubRepos
@@ -22,7 +22,7 @@ class RepoListViewModel : ViewModel() {
         EspressoIdlingResource.increment()
         _isLoading.postValue(true)
         val job = viewModelScope.launch {
-            val response = MainRepository().getGitHubReposByName(name)
+            val response = MainRepositoryImpl().getGitHubReposByName(name)
             _githubRepos.postValue(response)
         }
 
